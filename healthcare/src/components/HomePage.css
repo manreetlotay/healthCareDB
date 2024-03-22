@@ -1,0 +1,60 @@
+.homepage {
+    background-color: #1f1f1f;
+    color: #ffffff;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .homepage-content {
+    text-align: center;
+  }
+  
+  .homepage h1 {
+    font-size: 3rem;
+  }
+  
+  .homepage h2 {
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+  }
+  
+  .button-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  .homepage-button {
+    background-color: #3498db;
+    color: #ffffff;
+    font-size: 1.2rem;
+    padding: 1rem 2rem;
+    margin: 0.5rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+  }
+  
+  .homepage-button:hover {
+    background-color: #2980b9;
+  }
+  
+  @media screen and (max-width: 768px) {
+    .homepage h1 {
+      font-size: 2.5rem;
+    }
+  
+    .homepage h2 {
+      font-size: 1.2rem;
+    }
+  
+    .homepage-button {
+      font-size: 1rem;
+      padding: 0.8rem 1.5rem;
+    }
+  }
+  
