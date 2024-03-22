@@ -9,7 +9,7 @@ const HomePage = () => {
         <h2>Access the tables below or perform a query</h2>
         <div className="button-container">
           <a href="/person" className="homepage-button">Person</a>
-          <a href="/doctors" className="homepage-button">Doctors</a>
+          <a href="/employee" className="homepage-button">Employee</a>
           <a href="/appointments" className="homepage-button">Appointments</a>
           <a href="/appointments" className="homepage-button">Appointments</a>
           {/* Add more buttons as needed */}

@@ -17,7 +17,9 @@
   
   .homepage h2 {
     font-size: 1.5rem;
+    font-weight: lighter;
     margin-bottom: 2rem;
+    margin-top: 0.5rem;
   }
   
   .button-container {
@@ -30,6 +32,7 @@
     background-color: #3498db;
     color: #ffffff;
     font-size: 1.2rem;
+    font-weight: bold;
     padding: 1rem 2rem;
     margin: 0.5rem;
     border: none;
