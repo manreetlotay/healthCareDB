@@ -1,0 +1,55 @@
+/* QueryPage.css */
+
+.query-page-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-color: #1a1a1a; /* Dark background color */
+    color: #fff; /* White text color */
+  }
+  
+  .query-form {
+    margin-bottom: 20px;
+  }
+  
+  .query-form label {
+    display: block;
+    margin-bottom: 10px;
+  }
+  
+  .query-form input[type="text"] {
+    width: 300px;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #333; /* Dark input background color */
+    color: #fff; /* White text color */
+  }
+  
+  .query-form button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: #2185d0; /* Blue button color */
+    color: #fff; /* White text color */
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .query-form button:hover {
+    background-color: #1678c2; /* Darker blue on hover */
+  }
+  
+  .response-container {
+    text-align: center;
+  }
+  
+  .response-container pre {
+    padding: 20px;
+    border-radius: 5px;
+    background-color: #333; /* Dark background color for response box */
+    color: #fff; /* White text color */
+  }
+  

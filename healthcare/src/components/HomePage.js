@@ -10,7 +10,7 @@ const HomePage = () => {
         <div className="button-container">
           <a href="/person" className="homepage-button">Person</a>
           <a href="/employee" className="homepage-button">Employee</a>
-          <a href="/appointments" className="homepage-button">Appointments</a>
+          <a href="/query" className="homepage-button query">Query</a>
           <a href="/appointments" className="homepage-button">Appointments</a>
           {/* Add more buttons as needed */}
         </div>

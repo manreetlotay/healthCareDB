@@ -10,8 +10,9 @@ app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 
 //Port
-app.listen(5000, () => {
-  console.log("Server running on port 5000");
+const port = 5000;
+app.listen(port, () => {
+  console.log("Server running on port " + port);
 });
 
 //connect mysql to express
@@ -28,6 +29,14 @@ connection.connect((err) => {
       return;
     }
     console.log('Connected to MySQL database');
+});
+
+
+/*****************  QUERY ************************/
+app.post('/query', (req, res) => {
+  const { query } = req.body;
+  const response = { message: 'Query received and processed', query };
+  res.json(response);
 });
 
 
