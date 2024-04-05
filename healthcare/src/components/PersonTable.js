@@ -11,8 +11,7 @@ const PersonTable = () => {
     { name: 'Citizenship', label: 'Citizenship' },
     { name: 'FirstName', label: 'First Name' },
     { name: 'LastName', label: 'Last Name' },
-    { name: 'PhoneNumber', label: 'Phone Number' },
-    { name: 'ResidenceId', label: 'Residence Id'}
+    { name: 'phonenumber', label: 'Phone Number' },
   ];
 
   const [errorMessage, setErrorMessage] = useState('');

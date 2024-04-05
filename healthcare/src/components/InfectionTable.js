@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import DynamicCRUDTable from './common/DynamicCRUDTable';
 
-const EmployeeTable = () => {
+const InfectionTable = () => {
   const columns = [
-    { name: 'EmployeeId', label: 'Employee ID', readOnly: true },
-    { name: 'MedicareCardNumber', label: 'Medicare Card Number' },
-  
+    { name: 'InfectionId', label: 'Infection ID', readOnly: true },
+    { name: 'PersonId', label: 'Person Id' },
+    { name: 'InfectionType', label: 'Infection Type' },
+    { name: 'InfectionDate', label: 'Infection Date' },
+    { name: 'active', label: 'Active' },
   ];
 
   const [errorMessage, setErrorMessage] = useState('');
@@ -13,7 +15,7 @@ const EmployeeTable = () => {
 
   const fetchData = async () => {
     try {
-      const response = await fetch('/employeeData');
+      const response = await fetch('/infectionData');
       const data = await response.json();
       console.log('Fetched data:', data); 
       return data;
@@ -32,7 +34,7 @@ const EmployeeTable = () => {
 
   const handleAdd = async (newItem) => {
     try {
-      const response = await fetch('/employeeData', {
+      const response = await fetch('/infectionData', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -53,8 +55,8 @@ const EmployeeTable = () => {
 
   const handleUpdate = async (updatedItem) => {
     try {
-      const { EmployeeId, ...updatedData } = updatedItem;
-      const response = await fetch(`/employeeData/${EmployeeId}`, {
+      const { InfectionId, ...updatedData } = updatedItem;
+      const response = await fetch(`/infectionData/${InfectionId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'
@@ -76,7 +78,7 @@ const EmployeeTable = () => {
 
   const handleDelete = async (deletedItem) => {
     try {
-      const response = await fetch(`/employeeData/${deletedItem.EmployeeId}`, {
+      const response = await fetch(`/infectionData/${deletedItem.InfectionId}`, {
         method: 'DELETE'
       });
       if (!response.ok) {
@@ -93,18 +95,18 @@ const EmployeeTable = () => {
   return (
     <div className='table-container'>
       <DynamicCRUDTable
-        tableName="Employee"
+        tableName="Infection"
         columns={columns}
         fetchData={fetchData}
         onAdd={handleAdd}
         onUpdate={handleUpdate}
         onDelete={handleDelete}
-        uniqueKey="EmployeeId"
+        uniqueKey="InfectionId"
         errorMessage={errorMessage}
       />
     </div>
   );
 };
 
-export default EmployeeTable;
+export default InfectionTable;
 

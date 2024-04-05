@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import DynamicCRUDTable from './common/DynamicCRUDTable';
 
-const EmployeeTable = () => {
+const FacilityTable = () => {
   const columns = [
-    { name: 'EmployeeId', label: 'Employee ID', readOnly: true },
-    { name: 'MedicareCardNumber', label: 'Medicare Card Number' },
-  
+    { name: 'FacilityId', label: 'Facility ID', readOnly: true },
+    { name: 'Name', label: 'Name' },
+    { name: 'Capacity', label: 'Capacity' },
+    { name: 'PhoneNumber', label: 'Phone Number' },
+    { name: 'WebAddress', label: 'Web Address' },
+    { name: 'TypeOfFacility', label: 'Type of Facility' },
+    { name: 'AddressId', label: 'Address Id' },
   ];
 
   const [errorMessage, setErrorMessage] = useState('');
@@ -13,7 +17,7 @@ const EmployeeTable = () => {
 
   const fetchData = async () => {
     try {
-      const response = await fetch('/employeeData');
+      const response = await fetch('/facilityData');
       const data = await response.json();
       console.log('Fetched data:', data); 
       return data;
@@ -32,7 +36,7 @@ const EmployeeTable = () => {
 
   const handleAdd = async (newItem) => {
     try {
-      const response = await fetch('/employeeData', {
+      const response = await fetch('/facilityData', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -53,8 +57,8 @@ const EmployeeTable = () => {
 
   const handleUpdate = async (updatedItem) => {
     try {
-      const { EmployeeId, ...updatedData } = updatedItem;
-      const response = await fetch(`/employeeData/${EmployeeId}`, {
+      const { FacilityId, ...updatedData } = updatedItem;
+      const response = await fetch(`/facilityData/${FacilityId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'
@@ -76,7 +80,7 @@ const EmployeeTable = () => {
 
   const handleDelete = async (deletedItem) => {
     try {
-      const response = await fetch(`/employeeData/${deletedItem.EmployeeId}`, {
+      const response = await fetch(`/facilityData/${deletedItem.FacilityId}`, {
         method: 'DELETE'
       });
       if (!response.ok) {
@@ -93,18 +97,18 @@ const EmployeeTable = () => {
   return (
     <div className='table-container'>
       <DynamicCRUDTable
-        tableName="Employee"
+        tableName="Facility"
         columns={columns}
         fetchData={fetchData}
         onAdd={handleAdd}
         onUpdate={handleUpdate}
         onDelete={handleDelete}
-        uniqueKey="EmployeeId"
+        uniqueKey="FacilityId"
         errorMessage={errorMessage}
       />
     </div>
   );
 };
 
-export default EmployeeTable;
+export default FacilityTable;
 
