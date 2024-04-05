@@ -21,8 +21,19 @@ const PersonTable = () => {
     try {
       const response = await fetch('/personData');
       const data = await response.json();
-      console.log('Fetched data:', data); 
-      return data;
+
+      // Format the DOB for each entry
+    const formattedData = data.map((item) => {
+      return {
+        ...item,
+        DOB: new Date(item.DOB).toISOString().split('T')[0] // Format DOB
+      };
+    });
+
+    console.log('Fetched data:', formattedData);
+    return formattedData;
+      
+    
     } catch (error) {
       console.error('Error fetching data:', error);
       return [];
