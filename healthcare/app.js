@@ -520,7 +520,7 @@ app.delete('/personResidenceData/:PersonId/:ResidenceId', (req, res) => {
 
   const query = 'DELETE FROM personresidence WHERE PersonId = ? AND ResidenceId = ?';
 
-  connection.query(query, [personId, residenceId], (err, result) => {
+  connection.query(query, [PersonId, ResidenceId], (err, result) => {
     if (err) {
       console.error('Error deleting entry:', err);
       return res.status(500).json({ error: 'Internal server error' });
@@ -538,7 +538,7 @@ app.put('/personResidenceData/:PersonId/:ResidenceId', (req, res) => {
 
   const query = 'UPDATE personresidence SET ? WHERE PersonId = ? AND ResidenceId = ?';
 
-  connection.query(query, [updatedData, personId, residenceId], (err, result) => {
+  connection.query(query, [updatedData, PersonId, ResidenceId], (err, result) => {
     if (err) {
       console.error('Error updating entry:', err);
       return res.status(400).json({ error: err.sqlMessage });
@@ -583,7 +583,7 @@ app.delete('/relationData/:EmployeeId/:PersonId', (req, res) => {
   const EmployeeId = req.params.EmployeeId;
   const PersonId = req.params.PersonId;
 
-  const query = 'DELETE FROM personresidence WHERE EmployeeId = ? AND PersonId = ?';
+  const query = 'DELETE FROM relation WHERE EmployeeId = ? AND PersonId = ?';
 
   connection.query(query, [EmployeeId, PersonId], (err, result) => {
     if (err) {
@@ -601,7 +601,7 @@ app.put('/relationData/:EmployeeId/:PersonId', (req, res) => {
   const PersonId = req.params.PersonId;
   const updatedData = req.body;
 
-  const query = 'UPDATE personresidence SET ? WHERE EmployeeId = ? AND PersonId = ?';
+  const query = 'UPDATE relation SET ? WHERE EmployeeId = ? AND PersonId = ?';
 
   connection.query(query, [updatedData, EmployeeId, PersonId], (err, result) => {
     if (err) {
