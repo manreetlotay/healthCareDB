@@ -18,8 +18,19 @@ const EmployeeFacilityTable = () => {
     try {
       const response = await fetch('/employeeFacilityData');
       const data = await response.json();
-      console.log('Fetched data:', data); 
-      return data;
+
+      // Format the StartDate and endDate for each entry
+    const formattedData = data.map((item) => {
+      return {
+        ...item,
+        StartDate: new Date(item.StartDate).toISOString().split('T')[0],  // Format DOB
+        endDate: new Date(item.endDate).toISOString().split('T')[0],
+      };
+    });
+
+    console.log('Fetched data:', formattedData);
+    return formattedData;
+    
     } catch (error) {
       console.error('Error fetching data:', error);
       return [];
