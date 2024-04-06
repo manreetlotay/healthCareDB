@@ -18,8 +18,16 @@ const VaccinationTable = () => {
     try {
       const response = await fetch('/vaccinationData');
       const data = await response.json();
-      console.log('Fetched data:', data); 
-      return data;
+       // Format the VaccinationDate for each entry
+    const formattedData = data.map((item) => {
+      return {
+        ...item,
+        VaccinationDate: new Date(item.VaccinationDate).toISOString().split('T')[0]  
+      };
+    });
+
+    console.log('Fetched data:', formattedData);
+    return formattedData;
     } catch (error) {
       console.error('Error fetching data:', error);
       return [];
