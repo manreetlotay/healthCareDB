@@ -802,3 +802,132 @@ app.put('/vaccinationData/:id', (req, res) => {
   });
 });
 
+
+
+/*****************************RETRIEVE EMAILS OF EMPLOYEES WHO SHARE THE SAME SCHEDULE AS THE INFECTED***************************/
+
+app.get('/getSharedScheduleEmails/:personId', (req, res) => {
+  const personId = req.params.personId;
+  // const query = `
+  //   SELECT email 
+  //   FROM person 
+  //   WHERE (
+  //     SELECT DISTINCT s.EmployeeId
+  //     FROM schedule s
+  //     JOIN employeefacility ef ON s.EmployeeId = ef.EmployeeId
+  //     WHERE s.EmployeeId IN (
+  //         SELECT s2.EmployeeId
+  //         FROM employeefacility ef2
+  //         JOIN schedule s2 ON ef2.EmployeeId = s2.EmployeeId
+  //         WHERE ef2.FacilityId = (
+  //           SELECT FacilityId 
+  //           FROM employeefacility 
+  //           WHERE EmployeeId = ?
+  //         )
+  //         AND s2.EmployeeId != ?
+  //         AND DATE(s2.StartTime) IN (
+  //           SELECT DATE(StartTime) 
+  //           FROM schedule 
+  //           WHERE EmployeeId = ? 
+  //           AND Time(s2.StartTime) < Time(schedule.EndTime)
+  //           AND Time(s2.EndTime) > Time(schedule.StartTime)
+  //         )
+  //     ) = PersonId
+  //   )`;
+
+    const query = `SELECT email FROM person WHERE (
+      SELECT DISTINCT s.EmployeeId
+      FROM schedule s
+      JOIN employeefacility ef ON s.EmployeeId = ef.EmployeeId
+      WHERE s.EmployeeId IN (
+          SELECT s2.EmployeeId
+          FROM employeefacility ef2
+          JOIN schedule s2 ON ef2.EmployeeId = s2.EmployeeId
+          WHERE ef2.FacilityId = (SELECT FacilityId FROM employeefacility WHERE EmployeeId = ?)
+          AND s2.EmployeeId != 1
+          AND DATE(s2.StartTime) IN (SELECT DATE(StartTime) FROM schedule WHERE EmployeeId = ? AND Time(s2.StartTime) < Time(schedule.EndTime) AND Time(s2.EndTime) > Time(schedule.StartTime))
+      )
+    ) = PersonId;`;
+    
+  
+  connection.query(query, [personId, personId, personId], (err, results) => {
+    if (err) {
+      console.error('Error fetching shared schedule emails:', err);
+      res.status(500).json({ error: 'Internal server error' });
+      return;
+    }
+    const emails = results.map(result => result.email);
+    res.json(emails);
+  });
+});
+
+
+/*******************************************QUERIES*****************************************/
+const query11 = `
+SELECT 
+  CONCAT(a.HouseNumber, ' ', a.StreetName, ', ', a.City, ', ', a.Province, ', ', a.PostalCode) AS full_address,
+  CASE WHEN pr.TypeOfResidence = 1 THEN 'Primary' ELSE 'Secondary' END AS residence_type,
+  pr.PersonId,
+  p.FirstName,
+  p.LastName,
+  (SELECT employeeRole from employeefacility WHERE EmployeeId=pr.PersonId AND EndDate IS NULL) AS occupation,
+  (SELECT relationship from relation WHERE PersonId=pr.PersonId AND EmployeeId=1) AS relationship
+FROM personresidence pr
+JOIN residence res ON pr.ResidenceId = res.ResidenceId
+JOIN address a ON res.AddressId = a.AddressId
+JOIN person p ON pr.PersonId = p.PersonId
+WHERE pr.PersonId IN (
+  SELECT PersonId
+  FROM personresidence
+  WHERE ResidenceId IN (
+    SELECT ResidenceId
+    FROM personresidence
+    WHERE PersonId = 1
+  )
+  AND pr.PersonId <> 1
+)
+ORDER BY pr.TypeOfResidence, a.AddressId
+`;
+
+
+/***************************EXECUTING QUERIES 8 to 21*************************/
+app.get('/query/:nb', (req, res) => {
+  const nb = req.params.nb;
+  let query = '';
+  /*switch statement to set query based on nb of query recieved in request */
+  switch(nb) {
+    case '8': 
+      query = `SELECT person.PersonId, person.FirstName, person.LastName, vaccination.VaccinationId, vaccination.VaccinationDate, vaccination.VaccinationType
+      FROM person
+      JOIN vaccination ON person.PersonId = vaccination.PersonId`;
+
+      break;
+    case '9': 
+    case '10': 
+    case '11':
+        query = query11;;
+        break; 
+    case '12': 
+    case '13': 
+    case '14': 
+    case '15': 
+    case '16': 
+    case '17': 
+    case '18': 
+    case '19': 
+    case '20': 
+    case '21': 
+    default:
+      res.status(400).json({ error: 'Invalid query number' });
+      return;
+  }
+
+  connection.query(query, (err, results) => {
+    if (err) {
+      console.error('Error fetching data', err);
+      res.status(500).json({ error: 'Internal server error' });
+      return;
+    }
+    res.json(results);
+  });
+});

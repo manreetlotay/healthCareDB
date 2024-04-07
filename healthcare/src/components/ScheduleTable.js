@@ -9,6 +9,18 @@ const ScheduleTable = () => {
     { name: 'EmployeeId', label: 'Employee Id' },
   ];
 
+  const formatDateTime = (dateTimeString) => {
+    const date = new Date(dateTimeString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+    
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+  };
+
   const [errorMessage, setErrorMessage] = useState('');
   const [data, setData] = useState([]);
 
@@ -16,8 +28,18 @@ const ScheduleTable = () => {
     try {
       const response = await fetch('/scheduleData');
       const data = await response.json();
-      console.log('Fetched data:', data); 
-      return data;
+      // format StartTime and EndTime
+      const formattedData = data.map(item => ({
+        ...item,
+        StartTime: formatDateTime(item.StartTime),
+        EndTime: formatDateTime(item.EndTime)
+      }));
+
+      console.log('Fetched data:', formattedData); 
+      return formattedData;
+
+      // console.log('Fetched data:', data); 
+      // return data;
     } catch (error) {
       console.error('Error fetching data:', error);
       return [];
