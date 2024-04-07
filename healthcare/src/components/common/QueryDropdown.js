@@ -9,7 +9,7 @@ const QueryDropdown = ({ options }) => {
   const handleOptionClick = (option) => {
     setSelectedOption(option);
     // Assuming you have routes defined, you can navigate to another page
-    navigate(`/page/${option}`);
+    navigate(`/query/${option}`);
   };
 
   return (
