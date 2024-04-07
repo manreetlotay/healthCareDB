@@ -34,45 +34,28 @@ const Query10 = () => {
   return (
     <div className="query-container">
       <h1 className="query-title">Query 10</h1>
-      <h3 className="query-description">For a given employee, get the details of all the schedules she/he has been scheduled 
-during a specific period of time, sorted in ascending order by facility 
+      <h3 className="query-description">For a given employee with EmployeeId = 36, get the details of all the schedules she/he has been scheduled 
+before 2025, sorted in ascending order by facility 
 name, then by day of the year, the by start time.</h3>
       <table className="query-table">
         <thead>
           <tr>
           <th>Facility Name</th>
-          <th>Address</th>
-          <th>City</th>
-          <th>Province</th>
-          <th>Postal Code</th>
-          <th>Phone Number</th>
-          <th>Web Address</th>
-          <th>Type Of Facility</th>
-          <th>Capacity</th>
-          <th>Name of the General Manager</th>
-          <th>number of employees</th>
-          <th>Number of Doctors</th>
-          <th>Number of Nurses</th>
+          <th>Day of the Year</th>
+          <th>Start Time</th>
+          <th>End Time</th>
           </tr>
         </thead>
         <tbody>
-        {data.map(row => (
-        <tr key={row.PersonId}>
-          <td>{row.Name}</td>
-          <td>{row.Address}</td>
-          <td>{row.City}</td>
-          <td>{row.Province}</td>
-          <td>{row.PostalCode}</td>
-          <td>{row.PhoneNumber}</td>
-          <td>{row.WebAddress}</td>
-          <td>{row.TypeOfFacility}</td>
-          <td>{row.Capacity}</td>
-          <td>{row.gmName}</td>
-          <td>{row.NumDoctor}</td>
-          <td>{row.NumNurse}</td>
-          <td>{row.NumEmployees}</td>
+                {data.map(row => (
+        <tr>
+            <td>{row.Name}</td>
+            <td>{row['DATE(sch.StartTime)']}</td>
+            <td>{row['TIME(sch.StartTime)']}</td>
+            <td>{row['TIME(sch.EndTime)']}</td>
         </tr>
-))}
+        ))}
+
 
         </tbody>
       </table>

@@ -981,36 +981,162 @@ ORDER BY
     ef.StartDate DESC, person.FirstName DESC, person.LastName DESC;
 `;
 
-
-
-
-
+const query10 = `
+SELECT 
+    f.Name,
+    DATE(sch.StartTime),
+    TIME(sch.StartTime),
+    TIME(sch.EndTime)
+FROM 
+    employeefacility AS ef
+JOIN 
+    facility AS f ON f.FacilityId = ef.FacilityId
+JOIN 
+    schedule AS sch ON sch.EmployeeId = ef.EmployeeId
+WHERE 
+    ef.EmployeeId = 36
+    AND DATE(sch.StartTime) <= "2025-01-01"
+ORDER BY 
+    f.Name ASC, DATE(sch.StartTime) ASC, sch.StartTime;
+`;
 
 const query11 = `
 SELECT 
-  CONCAT(a.HouseNumber, ' ', a.StreetName, ', ', a.City, ', ', a.Province, ', ', a.PostalCode) AS full_address,
-  CASE WHEN pr.TypeOfResidence = 1 THEN 'Primary' ELSE 'Secondary' END AS residence_type,
-  pr.PersonId,
-  p.FirstName,
-  p.LastName,
-  (SELECT employeeRole from employeefacility WHERE EmployeeId=pr.PersonId AND EndDate IS NULL) AS occupation,
-  (SELECT relationship from relation WHERE PersonId=pr.PersonId AND EmployeeId=1) AS relationship
-FROM personresidence pr
-JOIN residence res ON pr.ResidenceId = res.ResidenceId
-JOIN address a ON res.AddressId = a.AddressId
-JOIN person p ON pr.PersonId = p.PersonId
-WHERE pr.PersonId IN (
-  SELECT PersonId
-  FROM personresidence
-  WHERE ResidenceId IN (
-    SELECT ResidenceId
-    FROM personresidence
-    WHERE PersonId = 1
-  )
-  AND pr.PersonId <> 1
-)
-ORDER BY pr.TypeOfResidence, a.AddressId
+    CONCAT(a.HouseNumber, ' ', a.StreetName, ', ', a.City, ', ', a.Province, ', ', a.PostalCode) AS full_address,
+    CASE WHEN pr.TypeOfResidence = 1 THEN 'Primary' ELSE 'Secondary' END AS residence_type,
+    p.FirstName,
+    p.LastName,
+    (SELECT employeeRole FROM employeefacility WHERE EmployeeId = pr.PersonId AND EndDate IS NULL) AS occupation,
+    (SELECT relationship FROM relation WHERE PersonId = pr.PersonId AND EmployeeId = 1) AS relationship
+FROM 
+    personresidence pr
+JOIN 
+    residence res ON pr.ResidenceId = res.ResidenceId
+JOIN 
+    address a ON res.AddressId = a.AddressId
+JOIN 
+    person p ON pr.PersonId = p.PersonId
+WHERE 
+    pr.PersonId IN (
+        SELECT PersonId
+        FROM personresidence
+        WHERE ResidenceId IN (
+            SELECT ResidenceId
+            FROM personresidence
+            WHERE PersonId = 1
+        )
+        AND pr.PersonId <> 1
+    )
+ORDER BY 
+    pr.TypeOfResidence, a.AddressId;
 `;
+
+
+const query12 = `
+SELECT 
+    p.FirstName,
+    p.LastName,
+    inf.InfectionDate,
+    f.Name,
+    (
+        SELECT COUNT(*)
+        FROM personresidence AS pr
+        WHERE pr.PersonId = ef.EmployeeId
+        AND pr.TypeOfResidence = 0
+    ) AS numSecondary
+FROM 
+    employeefacility AS ef
+JOIN 
+    infection AS inf ON inf.PersonId = ef.EmployeeId
+JOIN 
+    person AS p ON p.PersonId = ef.EmployeeId
+JOIN 
+    facility AS f ON f.FacilityId = ef.FacilityId
+WHERE 
+    ef.employeeRole = "Doctor" 
+    AND DATEDIFF(CURRENT_DATE, inf.InfectionDate) <= 14 
+    AND ef.endDate IS NULL;
+`;
+
+
+const query13 = `
+SELECT 
+    *
+FROM 
+    log
+WHERE 
+    log.FacilityId = 1 
+    AND log.Subject = "Cancel" 
+    AND log.Date > "2022-03-01" 
+    AND log.Date < "2024-05-01"
+ORDER BY 
+    log.Date DESC;
+`;
+
+const query14 = `
+SELECT
+    ef.EmployeeId,
+    p.FirstName,
+    p.LastName,
+    ef.EmployeeRole,
+    COUNT(DISTINCT pr.ResidenceId) AS number_of_secondary_residences
+FROM 
+    employeefacility AS ef
+JOIN 
+    person AS p ON ef.EmployeeId = p.PersonId
+JOIN 
+    personresidence AS pr ON p.PersonId = pr.PersonId
+JOIN 
+    schedule AS s ON ef.EmployeeId = s.EmployeeId
+WHERE 
+    s.EndTime >= DATE_SUB(CURDATE(), INTERVAL 4 WEEK) 
+    AND pr.TypeOfResidence = 0 
+    AND ef.FacilityId = 6
+GROUP BY 
+    ef.EmployeeId
+HAVING 
+    COUNT(DISTINCT pr.ResidenceId) >= 3
+ORDER BY 
+    EmployeeRole, COUNT(DISTINCT pr.ResidenceId) ASC;
+`;
+
+
+const query15 = `
+SELECT
+    p.FirstName,
+    p.LastName,
+    ef.StartDate,
+    p.DOB,
+    p.Email,
+    COUNT(DISTINCT i.InfectionId) AS total_COVID_infections,
+    COUNT(DISTINCT v.VaccinationId) AS total_vaccinations,
+    IFNULL(HOUR(SUM(TIMEDIFF(s.EndTime, s.StartTime))),0) AS total_scheduled_hours,
+    COUNT(DISTINCT pr.ResidenceId) AS number_of_secondary_residences
+FROM 
+    employeefacility AS ef
+JOIN 
+    person AS p ON ef.EmployeeId = p.PersonId
+LEFT JOIN 
+    personresidence AS pr ON p.PersonId = pr.PersonId AND pr.TypeOfResidence = 0
+LEFT JOIN 
+    vaccination AS v ON p.PersonId = v.PersonId
+JOIN 
+    infection AS i ON p.PersonId = i.PersonId AND EXISTS (SELECT 1 FROM infection WHERE PersonId=p.PersonId AND InfectionDate >= DATE_SUB(CURDATE(), INTERVAL 2 WEEK))
+JOIN 
+    schedule AS s ON ef.EmployeeId = s.EmployeeId
+WHERE 
+    ef.EmployeeRole = 'Nurse' 
+    AND ef.EndDate IS NULL 
+    AND i.InfectionType = 'Covid-19'
+GROUP BY 
+    ef.EmployeeId
+HAVING 
+    COUNT(DISTINCT ef.FacilityId) >= 2
+ORDER BY 
+    ef.StartDate, p.FirstName, p.LastName ASC;
+`;
+
+
 
 
 /***************************EXECUTING QUERIES 8 to 21*************************/
@@ -1026,13 +1152,23 @@ app.get('/query/:nb', (req, res) => {
       query = query9;
       break;
     case '10': 
+      query = query10;
+      break;
     case '11':
         query = query11;;
         break; 
     case '12': 
+        query = query12;
+        break;
     case '13': 
+        query = query13;
+        break;
     case '14': 
-    case '15': 
+        query = query14;
+        break;
+    case '15':
+        query = query15;
+        break; 
     case '16': 
     case '17': 
     case '18': 

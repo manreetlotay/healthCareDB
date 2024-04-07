@@ -48,7 +48,7 @@ city, then by type, then by number of doctors currently working for the facility
         </thead>
         <tbody>
         {data.map(row => (
-        <tr key={row.PersonId}>
+        <tr>
           <td>{row.Name}</td>
           <td>{row.Address}</td>
           <td>{row.City}</td>
