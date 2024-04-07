@@ -17,8 +17,16 @@ const InfectionTable = () => {
     try {
       const response = await fetch('/infectionData');
       const data = await response.json();
-      console.log('Fetched data:', data); 
-      return data;
+      // Format the InfectionDate for each entry
+    const formattedData = data.map((item) => {
+      return {
+        ...item,
+        InfectionDate: new Date(item.InfectionDate).toISOString().split('T')[0]  
+      };
+    });
+
+    console.log('Fetched data:', formattedData);
+    return formattedData;
     } catch (error) {
       console.error('Error fetching data:', error);
       return [];
