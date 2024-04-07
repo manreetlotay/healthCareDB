@@ -50,7 +50,7 @@ name, then by day of the year, the by start time.</h3>
                 {data.map(row => (
         <tr>
             <td>{row.Name}</td>
-            <td>{row['DATE(sch.StartTime)']}</td>
+            <td>{formatDate(row['DATE(sch.StartTime)'])}</td>
             <td>{row['TIME(sch.StartTime)']}</td>
             <td>{row['TIME(sch.EndTime)']}</td>
         </tr>

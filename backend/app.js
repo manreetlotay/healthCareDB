@@ -1136,6 +1136,78 @@ ORDER BY
     ef.StartDate, p.FirstName, p.LastName ASC;
 `;
 
+const query16 = `
+SELECT
+    ef.EmployeeRole,
+    COUNT(DISTINCT ef.EmployeeId) AS total_employees,
+    (
+        SELECT COUNT(DISTINCT PersonId) 
+        FROM infection 
+        WHERE PersonId = ef.EmployeeId 
+        AND InfectionType = 'Covid-19' 
+        AND active
+    ) AS total_infected_with_covid
+FROM 
+    employeefacility AS ef
+WHERE 
+    ef.EndDate IS NULL
+GROUP BY 
+    ef.EmployeeRole
+ORDER BY 
+    ef.EmployeeRole ASC;
+`;
+
+const query17 = `
+SELECT
+    ef.EmployeeRole,
+    COUNT(DISTINCT ef.EmployeeId) AS total_employees,
+    (
+        SELECT COUNT(DISTINCT PersonId) 
+        FROM person 
+        WHERE 
+            PersonId = ef.EmployeeId 
+            AND NOT EXISTS (
+                SELECT 1 
+                FROM infection AS i 
+                WHERE i.PersonId = ef.EmployeeId 
+                AND InfectionType = 'Covid-19'
+            )
+    ) AS total_never_infected_with_covid
+FROM 
+    employeefacility AS ef
+WHERE 
+    ef.EndDate IS NULL
+GROUP BY 
+    ef.EmployeeRole
+ORDER BY 
+    ef.EmployeeRole ASC;
+`;
+
+const query18 = `
+SELECT
+    a.Province,
+    COUNT(DISTINCT f.FacilityId) AS total_facilities,
+    COUNT(DISTINCT ef.EmployeeId) AS total_working_employees,
+    (
+        SELECT COUNT(DISTINCT PersonId) 
+        FROM infection 
+        WHERE active AND PersonId = ef.EmployeeId
+    ) AS total_covid_infected_employees,
+    f.Capacity,
+    IFNULL(HOUR(SUM(TIMEDIFF(s.EndTime, s.StartTime))), 0) AS total_scheduled_hours
+FROM 
+    address AS a
+JOIN 
+    facility AS f ON a.AddressId = f.AddressId
+LEFT JOIN 
+    employeefacility AS ef ON f.FacilityId = ef.FacilityId AND ef.EndDate IS NULL
+LEFT JOIN 
+    schedule AS s ON ef.EmployeeId = s.EmployeeId AND s.StartTime >= '2016-01-01 00:00:00' AND s.EndTime <= '2018-12-31 23:59:59'
+GROUP BY 
+    a.Province
+ORDER BY 
+    a.Province ASC;
+`;
 
 
 
@@ -1170,8 +1242,14 @@ app.get('/query/:nb', (req, res) => {
         query = query15;
         break; 
     case '16': 
-    case '17': 
+        query = query16;
+        break;
+    case '17':
+        query = query17;
+        break; 
     case '18': 
+        query = query18;
+        break;
     case '19': 
     case '20': 
     case '21': 
