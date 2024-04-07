@@ -894,6 +894,52 @@ app.get('/getSharedScheduleEmails/:personId', async (req, res) => {
 
 /*******************************************QUERIES*****************************************/
 
+const query8 = `
+SELECT 
+    f.Name,
+    CONCAT(a.HouseNumber, ' ', a.StreetName, ', ', a.City, ', ', a.Province, ' ', a.PostalCode) AS Address,
+    a.City,
+    a.Province,
+    a.PostalCode,
+    f.PhoneNumber,
+    f.WebAddress,
+    f.TypeOfFacility,
+    f.Capacity,
+    CONCAT(person.firstName, ' ', person.lastName) AS gmName,
+    (
+        SELECT COUNT(*)
+        FROM employeefacility AS efCount 
+        WHERE efCount.employeeRole = "Doctor" AND efCount.FacilityId = f.FacilityId
+    ) AS NumDoctor,
+    (
+        SELECT COUNT(*)
+        FROM employeefacility AS efCount 
+        WHERE efCount.employeeRole = "Nurse" AND efCount.FacilityId = f.FacilityId
+    ) AS NumNurse,
+    (
+        SELECT COUNT(*)
+        FROM employeefacility AS efCount 
+        WHERE efCount.FacilityId = f.FacilityId
+    ) AS NumEmployees
+FROM 
+    person
+JOIN 
+    employee ON person.PersonId = employee.EmployeeId
+JOIN 
+    employeefacility AS ef1 ON ef1.employeeId = employee.EmployeeId
+JOIN 
+    facility AS f ON ef1.FacilityId = f.FacilityId
+JOIN 
+    address AS a ON a.AddressId = f.FacilityId
+WHERE 
+    ef1.employeeRole = 'Administrative Personnel'
+    AND ef1.endDate IS NULL
+ORDER BY 
+    a.Province ASC, a.City ASC, NumDoctor ASC;
+`;
+
+
+
 const query9 = `
 SELECT 
     person.FirstName,

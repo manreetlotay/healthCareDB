@@ -33,7 +33,7 @@ const Query9 = () => {
 
   return (
     <div className="query-container">
-      <h1 className="query-title">Result of Query 9</h1>
+      <h1 className="query-title">Query 9</h1>
       <h3 className="query-description">Details of all the employees currently working in a specific facility who have at 
 least one secondary residence, sorted in descending order by start date, then 
 by first name, then by last name.</h3>

@@ -25,7 +25,7 @@ const Query11 = () => {
 
   return (
     <div className="query-container">
-      <h1 className="query-title">Result of Query 8</h1>
+      <h1 className="query-title">Query 11</h1>
       <h3 className="query-description">For a given employee, get the details of all the people who live with the employee at 
 the primary address and at all the secondary addresses. For every address the employee 
 has, you need to provide the residence type for that address, and for every person who 
