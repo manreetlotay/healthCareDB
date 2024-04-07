@@ -43,7 +43,7 @@ const DynamicCRUDTable = ({ tableName, columns, fetchData, onAdd, onUpdate, onDe
   };
 
   return (
-    <div>
+    <div className="crud">
     {errorMessage && <div className="error-message">{errorMessage}</div>}
     <CRUDTable caption={tableName} fetchItems={() => Promise.resolve(data)}>
       <Fields>{renderFields()}</Fields>

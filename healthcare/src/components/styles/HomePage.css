@@ -9,6 +9,15 @@
   
   .homepage-content {
     text-align: center;
+    
+  }
+
+  .extra {
+    height: 20vh;
+    background-color:#1f1f1f ;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
   
   .homepage h1 {

@@ -9,6 +9,7 @@ const HomePage = () => {
   
 
   return (
+    <div>
     <div className="homepage">
       <div className="homepage-content">
         <h1>Healthcare Database System</h1>
@@ -31,9 +32,9 @@ const HomePage = () => {
           <div className='dropdown-container'>
             <QueryDropdown className="dropdown" options={options} />
           </div>
-       
       </div>
     </div>
+    <div className='extra'></div></div>
   );
 };
 
