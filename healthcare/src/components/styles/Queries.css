@@ -10,6 +10,11 @@
     margin-bottom: 20px;
   }
   
+  .query-description {
+    margin-bottom: 20px;
+    font-weight: lighter;
+  }
+
   .query-table {
     width: 100%;
     border-collapse: collapse;
