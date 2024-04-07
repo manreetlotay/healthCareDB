@@ -35,37 +35,38 @@ city, then by type, then by number of doctors currently working for the facility
       <table className="query-table">
         <thead>
           <tr>
-          {/* <th>Facility Name</th>
-            <th>Address</th>
-            <th>City</th>
-            <th>Province</th>
-            <th>Postal Code</th>
-            <th>Phone Number</th>
-            <th>Web Address</th>
-            <th>Type</th>
-            <th>Capacity</th>
-            <th>General Manager's Name</th>
-            <th>Number of Employees</th>
-            <th>Number of Doctors</th>
-            <th>Number of Nurses</th> */}
-
-            <th>Person ID</th>
-            <th>First Name</th>
-            <th>Last Name</th>
-            <th>Vaccination ID</th>
-            <th>Vaccination Date</th>
-            <th>Vaccination Type</th>
+          <th>Name</th>
+          <th>Address Id</th>
+          <th>City</th>
+          <th>Province</th>
+          <th>Postal Code</th>
+          <th>Phone Number</th>
+          <th>Web Address</th>
+          <th>Type Of Facility</th>
+          <th>Capacity</th>
+          <th>First Name</th>
+          <th>Last Name</th>
+          <th>Number of Doctors</th>
+          <th>Number of Nurses</th>
           </tr>
         </thead>
         <tbody>
            {data.map(row => (
             <tr key={row.PersonId}>
-              <td>{row.PersonId}</td>
-              <td>{row.FirstName}</td>
-              <td>{row.LastName}</td>
-              <td>{row.VaccinationId}</td>
-              <td>{row.VaccinationDate}</td>
-              <td>{row.VaccinationType}</td>
+             <td>{row.Name}</td>
+              <td>{row.AddressId}</td>
+              <td>{row.City}</td>
+              <td>{row.Province}</td>
+              <td>{row.PostalCode}</td>
+              <td>{row.PhoneNumber}</td>
+              <td>{row.WebAddress}</td>
+              <td>{row.TypeOfFacility}</td>
+              <td>{row.Capacity}</td>
+              <td>{row.firstName}</td>
+              <td>{row.lastName}</td>
+              <td>{row.NumDoctor}</td>
+              <td>{row.NumNurse}</td>
+
             </tr>
           ))}
         </tbody>

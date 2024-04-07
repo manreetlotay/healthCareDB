@@ -1,8 +1,20 @@
 const express = require("express");
 const cors = require('cors');
 const mysql = require('mysql');
+const nodemailer = require('nodemailer');
 
 const app = express();
+
+// Initialize Nodemailer transporter
+const transporter = nodemailer.createTransport({
+  service: 'Gmail',
+  //secure: false,
+  auth: {
+    user: 'tdatabase9@gmail.com',
+    pass: 'okc353_4_db',
+  }
+});
+
 
 //middleware
 app.use(cors());
@@ -806,63 +818,128 @@ app.put('/vaccinationData/:id', (req, res) => {
 
 /*****************************RETRIEVE EMAILS OF EMPLOYEES WHO SHARE THE SAME SCHEDULE AS THE INFECTED***************************/
 
-app.get('/getSharedScheduleEmails/:personId', (req, res) => {
-  const personId = req.params.personId;
-  // const query = `
-  //   SELECT email 
-  //   FROM person 
-  //   WHERE (
-  //     SELECT DISTINCT s.EmployeeId
-  //     FROM schedule s
-  //     JOIN employeefacility ef ON s.EmployeeId = ef.EmployeeId
-  //     WHERE s.EmployeeId IN (
-  //         SELECT s2.EmployeeId
-  //         FROM employeefacility ef2
-  //         JOIN schedule s2 ON ef2.EmployeeId = s2.EmployeeId
-  //         WHERE ef2.FacilityId = (
-  //           SELECT FacilityId 
-  //           FROM employeefacility 
-  //           WHERE EmployeeId = ?
-  //         )
-  //         AND s2.EmployeeId != ?
-  //         AND DATE(s2.StartTime) IN (
-  //           SELECT DATE(StartTime) 
-  //           FROM schedule 
-  //           WHERE EmployeeId = ? 
-  //           AND Time(s2.StartTime) < Time(schedule.EndTime)
-  //           AND Time(s2.EndTime) > Time(schedule.StartTime)
-  //         )
-  //     ) = PersonId
-  //   )`;
 
-    const query = `SELECT email FROM person WHERE (
-      SELECT DISTINCT s.EmployeeId
-      FROM schedule s
-      JOIN employeefacility ef ON s.EmployeeId = ef.EmployeeId
-      WHERE s.EmployeeId IN (
-          SELECT s2.EmployeeId
-          FROM employeefacility ef2
-          JOIN schedule s2 ON ef2.EmployeeId = s2.EmployeeId
-          WHERE ef2.FacilityId = (SELECT FacilityId FROM employeefacility WHERE EmployeeId = ?)
-          AND s2.EmployeeId != 1
-          AND DATE(s2.StartTime) IN (SELECT DATE(StartTime) FROM schedule WHERE EmployeeId = ? AND Time(s2.StartTime) < Time(schedule.EndTime) AND Time(s2.EndTime) > Time(schedule.StartTime))
-      )
-    ) = PersonId;`;
-    
-  
-  connection.query(query, [personId, personId, personId], (err, results) => {
-    if (err) {
-      console.error('Error fetching shared schedule emails:', err);
-      res.status(500).json({ error: 'Internal server error' });
-      return;
-    }
+app.get('/getSharedScheduleEmails/:personId', async (req, res) => {
+  const personId = req.params.personId;
+
+  const query = `SELECT email FROM person WHERE (
+    SELECT DISTINCT s.EmployeeId
+    FROM schedule s
+    JOIN employeefacility ef ON s.EmployeeId = ef.EmployeeId
+    WHERE s.EmployeeId IN (
+        SELECT s2.EmployeeId
+        FROM employeefacility ef2
+        JOIN schedule s2 ON ef2.EmployeeId = s2.EmployeeId
+        WHERE ef2.FacilityId = (SELECT FacilityId FROM employeefacility WHERE EmployeeId = ?)
+        AND s2.EmployeeId != 1
+        AND DATE(s2.StartTime) IN (SELECT DATE(StartTime) FROM schedule WHERE EmployeeId = ? AND Time(s2.StartTime) < Time(schedule.EndTime) AND Time(s2.EndTime) > Time(schedule.StartTime))
+    )
+  ) = PersonId;`;
+
+  try {
+    const results = await new Promise((resolve, reject) => {
+      connection.query(query, [personId, personId, personId], (err, results) => {
+        if (err) {
+          console.error('Error fetching shared schedule emails:', err);
+          reject(err);
+          return;
+        }
+        resolve(results);
+      });
+    });
+
     const emails = results.map(result => result.email);
-    res.json(emails);
-  });
+    console.log('Retrieved emails:', emails);
+
+    const email = 'lotaymk@gmail.com';
+    const mailOptions = {
+      from: ' "nodemailer" <tdatabase9@gmail.com>',
+      to: email,
+      subject: 'Warning',
+      text: 'One of your colleagues with whom you worked in the past two weeks has been infected with COVID-19 (or else…)'
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.error('Error sending email to', email, ':', error);
+      } else {
+        console.log('Email sent to', email, ':', info.response);
+      }
+    });
+
+    // Send emails to each recipient
+    // emails.forEach(email => {
+    //   const mailOptions = {
+    //     from: 'tdatabase9@gmail.com',
+    //     to: email,
+    //     subject: 'Warning',
+    //     text: 'One of your colleagues with whom you worked in the past two weeks has been infected with COVID-19 (or else…)'
+    //   };
+
+    //   transporter.sendMail(mailOptions, (error, info) => {
+    //     if (error) {
+    //       console.error('Error sending email to', email, ':', error);
+    //     } else {
+    //       console.log('Email sent to', email, ':', info.response);
+    //     }
+    //   });
+    // });
+
+    res.json({ message: 'Emails sent successfully' });
+  } catch (error) {
+    res.status(500).json({ error: 'Internal server error' });
+  }
 });
 
 
 /*******************************************QUERIES*****************************************/
+
+const query9 = `
+SELECT 
+    person.FirstName,
+    person.LastName,
+    ef.StartDate,
+    person.DOB,
+    person.MedicareCardNumber,
+    person.phonenumber,
+    CONCAT(ad.HouseNumber, ' ', ad.StreetName, ', ', ad.Province, ', ', ad.PostalCode) AS Address,
+    person.Citizenship,
+    person.Email,
+    (
+        SELECT COUNT(*)
+        FROM personresidence AS pr_secondary
+        WHERE pr_secondary.PersonId = person.PersonId
+            AND pr_secondary.TypeOfResidence = 0
+    ) AS SecondaryResidenceCount
+FROM
+    person
+JOIN
+    employee AS e ON e.EmployeeId = person.PersonId
+JOIN
+    employeefacility AS ef ON ef.EmployeeId = e.EmployeeId
+JOIN
+    personresidence AS pr_primary ON pr_primary.PersonId = person.PersonId
+    AND pr_primary.TypeOfResidence = 1
+JOIN
+    residence AS res ON pr_primary.ResidenceId = res.ResidenceId
+JOIN
+    address AS ad ON ad.AddressId = res.AddressId
+WHERE
+    ef.FacilityId = 6 AND ef.EndDate IS NULL
+    AND person.PersonId IN (
+        SELECT pr.PersonId
+        FROM personresidence AS pr
+        WHERE pr.TypeOfResidence = 0
+    )
+ORDER BY
+    ef.StartDate DESC, person.FirstName DESC, person.LastName DESC;
+`;
+
+
+
+
+
+
 const query11 = `
 SELECT 
   CONCAT(a.HouseNumber, ' ', a.StreetName, ', ', a.City, ', ', a.Province, ', ', a.PostalCode) AS full_address,
@@ -897,12 +974,11 @@ app.get('/query/:nb', (req, res) => {
   /*switch statement to set query based on nb of query recieved in request */
   switch(nb) {
     case '8': 
-      query = `SELECT person.PersonId, person.FirstName, person.LastName, vaccination.VaccinationId, vaccination.VaccinationDate, vaccination.VaccinationType
-      FROM person
-      JOIN vaccination ON person.PersonId = vaccination.PersonId`;
-
+      query = query8;
       break;
     case '9': 
+      query = query9;
+      break;
     case '10': 
     case '11':
         query = query11;;

@@ -7,6 +7,7 @@ const ScheduleTable = () => {
     { name: 'StartTime', label: 'Start Time' },
     { name: 'EndTime', label: 'End Time' },
     { name: 'EmployeeId', label: 'Employee Id' },
+    { name: 'facilityId', label: 'Facility Id' },
   ];
 
   const formatDateTime = (dateTimeString) => {

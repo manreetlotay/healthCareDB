@@ -55,10 +55,10 @@ const InfectionTable = () => {
         throw new Error('Failed to add entry: ' + responseData.error);
       }
 
-      // Fetch emails of employees who share the same schedule as the infected
-      const sharedScheduleResponse = await fetch(`/getSharedScheduleEmails/${newItem.PersonId}`);
-      const sharedScheduleEmails = await sharedScheduleResponse.json();
-      console.log('Shared schedule emails:', sharedScheduleEmails);
+      // // Fetch emails of employees who share the same schedule as the infected
+      // const sharedScheduleResponse = await fetch(`/getSharedScheduleEmails/${newItem.PersonId}`);
+      // const sharedScheduleEmails = await sharedScheduleResponse.json();
+      // console.log('Shared schedule emails:', sharedScheduleEmails);
   
 
       fetchData().then((result) => setData(result));
