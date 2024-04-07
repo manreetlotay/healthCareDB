@@ -1,7 +1,13 @@
 import React from 'react';
 import './styles/HomePage.css';
+import QueryDropdown from './common/QueryDropdown';
 
 const HomePage = () => {
+
+  //query options
+  const options = ['Option 1', 'Option 2', 'Option 3'];
+  
+
   return (
     <div className="homepage">
       <div className="homepage-content">
@@ -20,9 +26,12 @@ const HomePage = () => {
           <a href="/residence" className="homepage-button">Residence</a>
           <a href="/schedule" className="homepage-button">Schedule</a>
           <a href="/vaccination" className="homepage-button">Vaccination</a>
-          {/* <a href="/query" className="homepage-button query">Query</a> */}
-          {/* Add more buttons as needed */}
-        </div>
+          </div>
+          <h2>Run the queries below</h2>
+          <div className='dropdown-container'>
+            <QueryDropdown className="dropdown" options={options} />
+          </div>
+       
       </div>
     </div>
   );
