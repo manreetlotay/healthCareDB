@@ -97,7 +97,7 @@ align-items: center;
   z-index: 1;
   border-radius: 5px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  color: black;
+  color: white;
 }
 
 .dropdown-content .option {
@@ -106,7 +106,7 @@ align-items: center;
 }
 
 .dropdown-content .option:hover {
-  background-color: #ddd;
+  background-color: #444242;
 }
 
 .dropdown:hover .dropdown-content {
