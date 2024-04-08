@@ -27,9 +27,6 @@ import Query15 from './components/queries/Query15';
 import Query16 from './components/queries/Query16';
 import Query17 from './components/queries/Query17';
 import Query18 from './components/queries/Query18';
-import Query19 from './components/queries/Query19';
-import Query20 from './components/queries/Query20';
-import Query21 from './components/queries/Query21';
 
 
 function App() {
@@ -65,9 +62,6 @@ function App() {
       <Route path='/query/16' element={<Query16 />} />
       <Route path='/query/17' element={<Query17 />} />
       <Route path='/query/18' element={<Query18 />} />
-      <Route path='/query/19' element={<Query19 />} />
-      <Route path='/query/20' element={<Query20 />} />
-      <Route path='/query/21' element={<Query21 />} />
     </Routes>
     </Router>
     </>

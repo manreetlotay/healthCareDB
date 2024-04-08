@@ -1002,48 +1002,72 @@ ORDER BY
 
 const query11 = `
 SELECT 
+    pr.ResidenceId,
     CONCAT(a.HouseNumber, ' ', a.StreetName, ', ', a.City, ', ', a.Province, ', ', a.PostalCode) AS full_address,
-    CASE WHEN pr.TypeOfResidence = 1 THEN 'Primary' ELSE 'Secondary' END AS residence_type,
+    (
+        SELECT 
+            CASE 
+                WHEN TypeOfResidence = 1 THEN 'Primary' 
+                ELSE 'Secondary' 
+            END 
+        FROM 
+            personresidence 
+        WHERE 
+            ResidenceId=pr.ResidenceId 
+            AND PersonId=6
+    ) AS residence_type,
     p.FirstName,
     p.LastName,
-    (SELECT employeeRole FROM employeefacility WHERE EmployeeId = pr.PersonId AND EndDate IS NULL) AS occupation,
-    (SELECT relationship FROM relation WHERE PersonId = pr.PersonId AND EmployeeId = 1) AS relationship
+    (
+        SELECT 
+            GROUP_CONCAT(DISTINCT employeeRole) 
+        FROM 
+            employeefacility 
+        WHERE 
+            EmployeeId=pr.PersonId 
+            AND EndDate IS NULL
+    ) AS occupation,
+    (
+        SELECT 
+            relationship 
+        FROM 
+            relation 
+        WHERE 
+            PersonId=pr.PersonId 
+            AND EmployeeId=6
+    ) AS relationship
 FROM 
-    personresidence pr
+    personresidence AS pr
 JOIN 
-    residence res ON pr.ResidenceId = res.ResidenceId
+    residence AS res ON pr.ResidenceId = res.ResidenceId
 JOIN 
-    address a ON res.AddressId = a.AddressId
+    address AS a ON res.AddressId = a.AddressId
 JOIN 
-    person p ON pr.PersonId = p.PersonId
+    person AS p ON pr.PersonId = p.PersonId
 WHERE 
-    pr.PersonId IN (
-        SELECT PersonId
+    pr.ResidenceId IN (
+        SELECT ResidenceId
         FROM personresidence
-        WHERE ResidenceId IN (
-            SELECT ResidenceId
-            FROM personresidence
-            WHERE PersonId = 1
-        )
-        AND pr.PersonId <> 1
+        WHERE PersonId=6
     )
-ORDER BY 
-    pr.TypeOfResidence, a.AddressId;
+    AND pr.PersonId <> 6;
 `;
+
+
 
 
 const query12 = `
 SELECT 
-    p.FirstName,
-    p.LastName,
-    inf.InfectionDate,
-    f.Name,
+    p.FirstName, 
+    p.LastName, 
+    inf.InfectionDate, 
+    f.Name, 
     (
-        SELECT COUNT(*)
-        FROM personresidence AS pr
-        WHERE pr.PersonId = ef.EmployeeId
+        SELECT COUNT(*) 
+        FROM personresidence AS pr 
+        WHERE pr.PersonId = ef.EmployeeId 
         AND pr.TypeOfResidence = 0
-    ) AS numSecondary
+    ) AS numSecondary 
 FROM 
     employeefacility AS ef
 JOIN 
@@ -1059,19 +1083,22 @@ WHERE
 `;
 
 
+
 const query13 = `
 SELECT 
-    *
+    * 
 FROM 
     log
 WHERE 
     log.FacilityId = 1 
     AND log.Subject = "Cancel" 
-    AND log.Date > "2022-03-01" 
+    AND log.Date > "2020-03-01" 
     AND log.Date < "2024-05-01"
 ORDER BY 
     log.Date DESC;
 `;
+
+
 
 const query14 = `
 SELECT
@@ -1110,7 +1137,11 @@ SELECT
     p.Email,
     COUNT(DISTINCT i.InfectionId) AS total_COVID_infections,
     COUNT(DISTINCT v.VaccinationId) AS total_vaccinations,
-    IFNULL(HOUR(SUM(TIMEDIFF(s.EndTime, s.StartTime))),0) AS total_scheduled_hours,
+    (
+        SELECT IFNULL(HOUR(SUM(TIMEDIFF(EndTime, StartTime))), 0)
+        FROM schedule
+        WHERE EmployeeId = ef.EmployeeId
+    ) AS total_scheduled_hours,
     COUNT(DISTINCT pr.ResidenceId) AS number_of_secondary_residences
 FROM 
     employeefacility AS ef
@@ -1122,8 +1153,6 @@ LEFT JOIN
     vaccination AS v ON p.PersonId = v.PersonId
 JOIN 
     infection AS i ON p.PersonId = i.PersonId AND EXISTS (SELECT 1 FROM infection WHERE PersonId=p.PersonId AND InfectionDate >= DATE_SUB(CURDATE(), INTERVAL 2 WEEK))
-JOIN 
-    schedule AS s ON ef.EmployeeId = s.EmployeeId
 WHERE 
     ef.EmployeeRole = 'Nurse' 
     AND ef.EndDate IS NULL 
@@ -1135,6 +1164,7 @@ HAVING
 ORDER BY 
     ef.StartDate, p.FirstName, p.LastName ASC;
 `;
+
 
 const query16 = `
 SELECT
@@ -1250,9 +1280,6 @@ app.get('/query/:nb', (req, res) => {
     case '18': 
         query = query18;
         break;
-    case '19': 
-    case '20': 
-    case '21': 
     default:
       res.status(400).json({ error: 'Invalid query number' });
       return;

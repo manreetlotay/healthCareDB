@@ -56,8 +56,8 @@ then by last name.</h3>
         <tr >
             <td>{row.FirstName}</td>
             <td>{row.LastName}</td>
-            <td>{row.StartDate}</td>
-            <td>{row.DOB}</td>
+            <td>{formatDate(row.StartDate)}</td>
+            <td>{formatDate(row.DOB)}</td>
             <td>{row.Email}</td>
             <td>{row.total_COVID_infections}</td>
             <td>{row.total_vaccinations}</td>

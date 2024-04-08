@@ -40,31 +40,26 @@ date of the emails</h3>
       <table className="query-table">
         <thead>
           <tr>
-          <th>First Name</th>
-          <th>Last Name</th>
-          <th>Start Date of Work</th>
-          <th>Date of Birth</th>
-          <th>Medicare Card Number</th>
-          <th>Phone Number</th>
-          <th>Primary Address</th>
-          <th>Citizenship</th>
-          <th>Email</th>
-          <th>Number of secondary residences</th>
+          <th>Log Id</th>
+          <th>Facility Id</th>
+          <th>Person Id</th>
+          <th>Subject</th>
+          <th>Body</th>
+          <th>Date</th>
+          <th>Facility Name</th>
+          
           </tr>
         </thead>
         <tbody>
         {data.map(row => (
             <tr>
-                <td>{row.FirstName}</td>
-                <td>{row.LastName}</td>
-                <td>{formatDate(row.StartDate)}</td>
-                <td>{formatDate(row.DOB)}</td>
-                <td>{row.MedicareCardNumber}</td>
-                <td>{row.phonenumber}</td>
-                <td>{row.Address}</td>
-                <td>{row.Citizenship}</td>
-                <td>{row.Email}</td>
-                <td>{row.SecondaryResidenceCount}</td>
+                <td>{row.LogId}</td>
+                <td>{row.FacilityId}</td>
+                <td>{row.PersonId}</td>
+                <td>{row.Subject}</td>
+                <td>{row.Body}</td>
+                <td>{formatDate(row.Date)}</td>
+                <td>{row.facilityName}</td>
             </tr>
             ))}
 
@@ -74,4 +69,4 @@ date of the emails</h3>
   );
 }
 
-export default 13;
+export default Query13;
