@@ -18,8 +18,18 @@ const LogTable = () => {
     try {
       const response = await fetch('/logData');
       const data = await response.json();
-      console.log('Fetched data:', data); 
-      return data;
+      // Format the Date for each entry
+      const formattedData = data.map((item) => {
+        return {
+          ...item,
+          Date: new Date(item.Date).toISOString().split('T')[0]
+        };
+      });
+
+      console.log('Fetched data:', formattedData);
+      return formattedData;
+      // console.log('Fetched data:', data); 
+      // return data;
     } catch (error) {
       console.error('Error fetching data:', error);
       return [];
@@ -28,10 +38,10 @@ const LogTable = () => {
 
   useEffect(() => {
     fetchData().then((result) => {
-      console.log('Setting data:', result); 
+      console.log('Setting data:', result);
       setData(result);
     });
-  }, []); 
+  }, []);
 
   const handleAdd = async (newItem) => {
     try {
@@ -43,7 +53,7 @@ const LogTable = () => {
         body: JSON.stringify(newItem)
       });
       const responseData = await response.json();
-      
+
       if (!response.ok) {
         throw new Error('Failed to add entry: ' + responseData.error);
       }

@@ -1,37 +1,41 @@
 .query-container {
-    background-color: #1f1f1f; /* Dark background color */
-    color: #fff; /* White text color */
-    padding: 5rem;
-    text-align: center;
-    height: 150vh;
-  }
-  
-  .query-title {
-    font-size: 24px;
-    margin-bottom: 20px;
-  }
-  
-  .query-description {
-    margin-bottom: 20px;
-    font-weight: lighter;
-  }
+  background-color: #1f1f1f;
+  /* Dark background color */
+  color: #fff;
+  /* White text color */
+  padding: 5rem;
+  text-align: center;
+  height: 250vh;
+}
 
-  .query-table {
-    width: 100%;
-    border-collapse: collapse;
-  }
-  
-  .query-table th,
-  .query-table td {
-    padding: 10px;
-    border: 1px solid #fff; /* White border */
-  }
-  
-  .query-table th {
-    background-color: #3498db; /* Darker background color for column headers */
-  }
-  
-  .query-table tbody tr:nth-child(even) {
-    background-color: #1f1f1f; /* Darker background color for even rows */
-  }
-  
+.query-title {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.query-description {
+  margin-bottom: 20px;
+  font-weight: lighter;
+}
+
+.query-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.query-table th,
+.query-table td {
+  padding: 10px;
+  border: 1px solid #fff;
+  /* White border */
+}
+
+.query-table th {
+  background-color: #3498db;
+  /* Darker background color for column headers */
+}
+
+.query-table tbody tr:nth-child(even) {
+  background-color: #1f1f1f;
+  /* Darker background color for even rows */
+}

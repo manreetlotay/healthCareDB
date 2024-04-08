@@ -19,7 +19,7 @@ const transporter = nodemailer.createTransport({
 //middleware
 app.use(cors());
 app.use(express.json());
-app.use(express.urlencoded({extended: false}));
+app.use(express.urlencoded({ extended: false }));
 
 //Port
 const port = 5000;
@@ -29,18 +29,18 @@ app.listen(port, () => {
 
 //connect mysql to express
 const connection = mysql.createConnection({
-    host: 'okc353.encs.concordia.ca',
-    user: 'okc353_4',
-    password: 'Hd514mod16',
-    database: 'okc353_4'
-  });
+  host: 'okc353.encs.concordia.ca',
+  user: 'okc353_4',
+  password: 'Hd514mod16',
+  database: 'okc353_4'
+});
 
 connection.connect((err) => {
-    if (err) {
-      console.error('Error connecting to MySQL database:', err);
-      return;
-    }
-    console.log('Connected to MySQL database');
+  if (err) {
+    console.error('Error connecting to MySQL database:', err);
+    return;
+  }
+  console.log('Connected to MySQL database');
 });
 
 
@@ -77,7 +77,7 @@ app.post('/personData', (req, res) => {
     if (err) {
       console.error('Error adding entry:', err);
       return res.status(400).json({ error: err.sqlMessage });
-      
+
     }
     res.status(200).json({ message: 'Entry added successfully' });
   });
@@ -140,7 +140,7 @@ app.post('/addressData', (req, res) => {
     if (err) {
       console.error('Error adding entry:', err);
       return res.status(400).json({ error: err.sqlMessage });
-      
+
     }
     res.status(200).json({ message: 'Entry added successfully' });
   });
@@ -205,7 +205,7 @@ app.post('/employeeData', (req, res) => {
     if (err) {
       console.error('Error adding entry:', err);
       return res.status(400).json({ error: err.sqlMessage });
-      
+
     }
     res.status(200).json({ message: 'Entry added successfully' });
   });
@@ -267,7 +267,7 @@ app.post('/employeeFacilityData', (req, res) => {
     if (err) {
       console.error('Error adding entry:', err);
       return res.status(400).json({ error: err.sqlMessage });
-      
+
     }
     res.status(200).json({ message: 'Entry added successfully' });
   });
@@ -330,7 +330,7 @@ app.post('/facilityData', (req, res) => {
     if (err) {
       console.error('Error adding entry:', err);
       return res.status(400).json({ error: err.sqlMessage });
-      
+
     }
     res.status(200).json({ message: 'Entry added successfully' });
   });
@@ -393,7 +393,7 @@ app.post('/infectionData', (req, res) => {
     if (err) {
       console.error('Error adding entry:', err);
       return res.status(400).json({ error: err.sqlMessage });
-      
+
     }
     res.status(200).json({ message: 'Entry added successfully' });
   });
@@ -456,7 +456,7 @@ app.post('/logData', (req, res) => {
     if (err) {
       console.error('Error adding entry:', err);
       return res.status(400).json({ error: err.sqlMessage });
-      
+
     }
     res.status(200).json({ message: 'Entry added successfully' });
   });
@@ -519,7 +519,7 @@ app.post('/personResidenceData', (req, res) => {
     if (err) {
       console.error('Error adding entry:', err);
       return res.status(400).json({ error: err.sqlMessage });
-      
+
     }
     res.status(200).json({ message: 'Entry added successfully' });
   });
@@ -584,7 +584,7 @@ app.post('/relationData', (req, res) => {
     if (err) {
       console.error('Error adding entry:', err);
       return res.status(400).json({ error: err.sqlMessage });
-      
+
     }
     res.status(200).json({ message: 'Entry added successfully' });
   });
@@ -650,7 +650,7 @@ app.post('/residenceData', (req, res) => {
     if (err) {
       console.error('Error adding entry:', err);
       return res.status(400).json({ error: err.sqlMessage });
-      
+
     }
     res.status(200).json({ message: 'Entry added successfully' });
   });
@@ -714,7 +714,7 @@ app.post('/scheduleData', (req, res) => {
     if (err) {
       console.error('Error adding entry:', err);
       return res.status(400).json({ error: err.sqlMessage });
-      
+
     }
     res.status(200).json({ message: 'Entry added successfully' });
   });
@@ -777,7 +777,7 @@ app.post('/vaccinationData', (req, res) => {
     if (err) {
       console.error('Error adding entry:', err);
       return res.status(400).json({ error: err.sqlMessage });
-      
+
     }
     res.status(200).json({ message: 'Entry added successfully' });
   });
@@ -1056,31 +1056,8 @@ WHERE
 
 
 
-const query12 = `
-SELECT 
-    p.FirstName, 
-    p.LastName, 
-    inf.InfectionDate, 
-    f.Name, 
-    (
-        SELECT COUNT(*) 
-        FROM personresidence AS pr 
-        WHERE pr.PersonId = ef.EmployeeId 
-        AND pr.TypeOfResidence = 0
-    ) AS numSecondary 
-FROM 
-    employeefacility AS ef
-JOIN 
-    infection AS inf ON inf.PersonId = ef.EmployeeId
-JOIN 
-    person AS p ON p.PersonId = ef.EmployeeId
-JOIN 
-    facility AS f ON f.FacilityId = ef.FacilityId
-WHERE 
-    ef.employeeRole = "Doctor" 
-    AND DATEDIFF(CURRENT_DATE, inf.InfectionDate) <= 14 
-    AND ef.endDate IS NULL;
-`;
+const query12 = "SELECT p.FirstName, p.LastName, inf.InfectionDate, f.Name, (SELECT Count(*) FROM personresidence AS pr WHERE pr.PersonId = ef.EmployeeId and pr.TypeOfResidence = 0) as numSecondary from employeefacility as ef join infection as inf on inf.PersonId = ef.EmployeeId join person as p on p.PersonId = ef.EmployeeId join facility as f on f.FacilityId = ef.FacilityId where ef.employeeRole = 'Doctor' and datediff(Current_Date, inf.InfectionDate) <= 14 and ef.endDate is null;";
+
 
 
 
@@ -1246,40 +1223,40 @@ app.get('/query/:nb', (req, res) => {
   const nb = req.params.nb;
   let query = '';
   /*switch statement to set query based on nb of query recieved in request */
-  switch(nb) {
-    case '8': 
+  switch (nb) {
+    case '8':
       query = query8;
       break;
-    case '9': 
+    case '9':
       query = query9;
       break;
-    case '10': 
+    case '10':
       query = query10;
       break;
     case '11':
-        query = query11;;
-        break; 
-    case '12': 
-        query = query12;
-        break;
-    case '13': 
-        query = query13;
-        break;
-    case '14': 
-        query = query14;
-        break;
+      query = query11;;
+      break;
+    case '12':
+      query = query12;
+      break;
+    case '13':
+      query = query13;
+      break;
+    case '14':
+      query = query14;
+      break;
     case '15':
-        query = query15;
-        break; 
-    case '16': 
-        query = query16;
-        break;
+      query = query15;
+      break;
+    case '16':
+      query = query16;
+      break;
     case '17':
-        query = query17;
-        break; 
-    case '18': 
-        query = query18;
-        break;
+      query = query17;
+      break;
+    case '18':
+      query = query18;
+      break;
     default:
       res.status(400).json({ error: 'Invalid query number' });
       return;

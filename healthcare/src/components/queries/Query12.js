@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import '../styles/Queries.css'; 
+import '../styles/Queries.css';
 
 const Query12 = () => {
   const [data, setData] = useState([]);
@@ -14,16 +14,16 @@ const Query12 = () => {
 
   useEffect(() => {
     fetchData().then((result) => {
-      console.log('Setting data:', result); 
+      console.log('Setting data:', result);
       setData(result);
     });
-  }, []); 
+  }, []);
 
   const fetchData = async () => {
     try {
       const response = await fetch('/query/12');
       const data = await response.json();
-      console.log('Fetched data:', data); 
+      console.log('Fetched data:', data);
       return data;
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -34,29 +34,29 @@ const Query12 = () => {
   return (
     <div className="query-container">
       <h1 className="query-title">Query 12</h1>
-      <h3 className="query-description">Details of all the doctors who have been infected by COVID-19 in the past two 
-weeks, sorted in ascending order by the 
-facility name, then by the number of secondary residences the doctor has.</h3>
+      <h3 className="query-description">Details of all the doctors who have been infected by COVID-19 in the past two
+        weeks, sorted in ascending order by the
+        facility name, then by the number of secondary residences the doctor has.</h3>
       <table className="query-table">
         <thead>
           <tr>
-          <th>First Name</th>
-          <th>Last Name</th>
-          <th>Infection Date</th>
-          <th>Name of Facility</th>
-          <th>Number of secondary residences</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Infection Date</th>
+            <th>Name of Facility</th>
+            <th>Number of secondary residences</th>
           </tr>
         </thead>
         <tbody>
-        {data.map(row => (
+          {data.map(row => (
             <tr>
-                <td>{row.FirstName}</td>
-                <td>{row.LastName}</td>
-                <td>{formatDate(row.InfectionDate)}</td>
-                <td>{row.Name}</td>
-                <td>{row.numSecondary}</td>
+              <td>{row.FirstName}</td>
+              <td>{row.LastName}</td>
+              <td>{formatDate(row.InfectionDate)}</td>
+              <td>{row.Name}</td>
+              <td>{row.numSecondary}</td>
             </tr>
-            ))}
+          ))}
 
         </tbody>
       </table>

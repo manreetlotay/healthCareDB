@@ -18,7 +18,7 @@ const ScheduleTable = () => {
     const hours = String(date.getHours()).padStart(2, '0');
     const minutes = String(date.getMinutes()).padStart(2, '0');
     const seconds = String(date.getSeconds()).padStart(2, '0');
-    
+
     return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
   };
 
@@ -36,7 +36,7 @@ const ScheduleTable = () => {
         EndTime: formatDateTime(item.EndTime)
       }));
 
-      console.log('Fetched data:', formattedData); 
+      console.log('Fetched data:', formattedData);
       return formattedData;
 
       // console.log('Fetched data:', data); 
@@ -49,10 +49,10 @@ const ScheduleTable = () => {
 
   useEffect(() => {
     fetchData().then((result) => {
-      console.log('Setting data:', result); 
+      console.log('Setting data:', result);
       setData(result);
     });
-  }, []); 
+  }, []);
 
   const handleAdd = async (newItem) => {
     try {
@@ -64,7 +64,7 @@ const ScheduleTable = () => {
         body: JSON.stringify(newItem)
       });
       const responseData = await response.json();
-      
+
       if (!response.ok) {
         throw new Error('Failed to add entry: ' + responseData.error);
       }
