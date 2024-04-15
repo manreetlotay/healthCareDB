@@ -1,10 +1,15 @@
 # COMP-353: Healthcare Database Management System
 
-## To start the Backend server
+## Technologies used
+- React.js
+- Express.js
+- MySQL
+
+## Running the Backend server
 - cd backend
 - npm install
 - nodemon app.js
 
-## Front-End
+## Running the Front-End
 - cd healthcare
 - npm start
